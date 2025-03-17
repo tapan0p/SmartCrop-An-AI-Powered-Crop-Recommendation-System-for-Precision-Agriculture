@@ -18,10 +18,9 @@ class CustomDataset(Dataset):
     
 
 class DataPreprocess:
-    def __init__(self,path,state=42):
-        self.path = path
+    def __init__(self,df,state=42):
         self.state=state
-        self.df = pd.read_csv(path)
+        self.df = df
         self.features = self.df.columns
     
     def make_tensor(self,X,y):
