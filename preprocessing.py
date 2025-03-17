@@ -3,7 +3,19 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 import torch
+from torch.utils.data import DataLoader,Dataset
 
+class CustomDataset(Dataset):
+    def __init__(self,X,y):
+        self.X = X
+        self.y = y
+
+    def __len__(self):
+        return len(self.y)
+    
+    def __getitem__(self,idx):
+        return self.X[idx],self.y[idx]
+    
 
 class DataPreprocess:
     def __init__(self,path,state=42):
@@ -11,8 +23,12 @@ class DataPreprocess:
         self.state=state
         self.df = pd.read_csv(path)
         self.features = self.df.columns
+    
+    def make_tensor(self,X,y):
+        self.X = torch.tensor(X,dtype=torch.float32)
+        self.y = torch.tensor(y,dtype=torch.long)
 
-    def preprocess(self):
+    def load_data(self):
         target = self.features[-1]
         # Encode the target
         encoder = LabelEncoder()
@@ -26,13 +42,14 @@ class DataPreprocess:
         X_train = scaler.fit_transform(X_train)
         X_val = scaler.transform(X_val)
         X_test = scaler.transform(X_test)
-        # Convert the data into pytorch tensors
-        X_train = torch.tensor(X_train,dtype=torch.float32)
-        X_val = torch.tensor(X_val,dtype=torch.float32)
-        X_test = torch.tensor(X_test,dtype=torch.float32)
-        y_train = torch.tensor(y_train,dtype=torch.long)
-        y_val = torch.tensor(y_val,dtype=torch.long)
-        y_test = torch.tensor(y_test,dtype=torch.long)
+        # make pytorch tensors
+        X_train,y_train = self.make_tensor(X_train,y_train)
+        X_val,y_val = self.make_tensor(X_val,y_val)
+        X_test,y_test = self.make_tensor(X_test,y_test)
+
         return X_train,y_train,X_val,y_val,X_test,y_test
+        
+        
+    
         
 
