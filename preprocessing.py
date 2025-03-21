@@ -24,15 +24,15 @@ class DataPreprocess:
         self.features = self.df.columns
     
     def make_tensor(self,X,y):
-        self.X = torch.tensor(X,dtype=torch.float32)
-        self.y = torch.tensor(y,dtype=torch.long)
+        X = torch.tensor(X,dtype=torch.float32)
+        y = torch.tensor(y,dtype=torch.long)
+        return X,y
 
     def load_data(self):
         target = self.features[-1]
-        # Encode the target
         encoder = LabelEncoder()
-        self.df["encode_label"] = encoder.fit_transform(self.df[target])
-        X,y = self.df.drop(columns=[target,"encode_label"]).values,self.df["encode_label"].values
+        self.df["label"]= encoder.fit_transform(self.df["label"])
+        X,y = self.df.drop(columns=[target]).values,self.df[target].values
         # Split data in train, test and validation
         X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.1,random_state=self.state)
         X_train,X_val,y_train,y_val = train_test_split(X_train,y_train,test_size=0.1,random_state=self.state)
