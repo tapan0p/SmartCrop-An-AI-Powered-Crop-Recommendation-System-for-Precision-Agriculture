@@ -17,6 +17,7 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description="Train Logistic Regression model for crop recomendation.")
+    
     parser.add_argument("--data_path",type=str,default="Dataset\Crop_recommendation.csv",help="Path to dataset.")
     parser.add_argument("--lr",type=float,default=0.01,help="Learning rate")
     parser.add_argument("--b",type=int,default=32,help="Batch size")
