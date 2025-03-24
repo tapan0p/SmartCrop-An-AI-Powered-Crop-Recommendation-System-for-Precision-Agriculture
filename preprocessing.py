@@ -4,6 +4,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 import torch
 from torch.utils.data import DataLoader,Dataset
+import joblib
 
 class CustomDataset(Dataset):
     def __init__(self,X,y):
@@ -18,9 +19,9 @@ class CustomDataset(Dataset):
     
 
 class DataPreprocess:
-    def __init__(self,df,state=42):
+    def __init__(self,path,state=42):
         self.state=state
-        self.df = df
+        self.df = pd.read_csv(path)
         self.features = self.df.columns
     
     def make_tensor(self,X,y):
@@ -32,6 +33,7 @@ class DataPreprocess:
         target = self.features[-1]
         encoder = LabelEncoder()
         self.df["label"]= encoder.fit_transform(self.df["label"])
+        joblib.dump(encoder, './Label_Encoder/label_encoder.pkl')
         X,y = self.df.drop(columns=[target]).values,self.df[target].values
         # Split data in train, test and validation
         X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.1,random_state=self.state)

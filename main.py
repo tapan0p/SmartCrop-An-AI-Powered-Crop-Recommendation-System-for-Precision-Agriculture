@@ -1,17 +1,18 @@
 import pandas as pd
 from logistic_regression import LogisticRegression
 import argparse
+import torch
+from pipeline import Pipeline
 
 
 def main(args):
-    df = pd.read_csv(args.data_path)
-    input_dim = len(df.columns)-1
-    num_columns = len(df['label'].unique())
-    model = LogisticRegression(input_dim=input_dim,num_class=num_columns)
-    model.load_data(df)
-    model.train(epochs=args.epochs,batch_size=args.b,lr=args.lr)
-    model.plot()
-    model.test()
+    model = LogisticRegression(input_dim=7,num_class=22)
+    pipeline = Pipeline(model=model,path=args.data_path,epochs=args.epochs,batch_size=args.b,lr=args.lr)
+    pipeline.load_data()
+    pipeline.train()
+    pipeline.plot(plot_name="Logistic_regression_plot")
+    pipeline.test()
+    pipeline.save_model(model_name="Logistic_regression_model")
 
 
 if __name__=="__main__":
